@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -35,15 +35,7 @@ interface NavEntry {
 }
 
 function Logo() {
-  return (
-    <svg viewBox="0 0 28 28" className="size-7" aria-hidden>
-      <rect x="3" y="5" width="5" height="18" rx="1" className="fill-book" />
-      <rect x="9.5" y="8" width="4" height="15" rx="1" fill="currentColor" opacity=".8" />
-      <circle cx="19.5" cy="15.5" r="6.5" className="fill-vinyl" />
-      <circle cx="19.5" cy="15.5" r="1.6" className="fill-background" />
-      <rect x="2" y="23.5" width="24" height="2" rx="1" fill="currentColor" opacity=".35" />
-    </svg>
-  );
+  return <img src="/stacks-logo.svg" alt="" className="size-7 rounded-md" />;
 }
 
 /** Keyboard shortcuts: N adds an item, / focuses the page's search field. */
@@ -104,9 +96,14 @@ export function AppShell() {
   return (
     <div className="min-h-dvh md:grid md:grid-cols-[232px_1fr]">
       <aside className="sticky top-0 hidden h-dvh flex-col border-r px-3 py-5 md:flex">
-        <div className="flex items-center gap-2.5 px-2.5 pb-6">
-          <Logo />
-          <span className="text-[17px] font-semibold tracking-tight">Stacks</span>
+        <div className="pb-6">
+          <Link
+            to="/"
+            className="focus-visible:ring-ring/50 flex w-max items-center gap-2.5 rounded-md px-2.5 outline-none focus-visible:ring-[3px]"
+          >
+            <Logo />
+            <span className="text-[17px] font-semibold tracking-tight">Stacks</span>
+          </Link>
         </div>
         <Button className="mb-5 w-full justify-start" onClick={addDefault}>
           <Plus />
