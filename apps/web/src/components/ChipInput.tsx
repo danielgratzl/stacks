@@ -120,11 +120,13 @@ export function ChipInput({
           role="listbox"
           className="anim-fade bg-popover text-popover-foreground absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-md border p-1 shadow-lg"
         >
+          {/* Mouse targets only: the keyboard uses the arrow keys, so Tab moves on to the next field. */}
           {matches.map((m, i) => (
             <button
               key={m}
               type="button"
               role="option"
+              tabIndex={-1}
               aria-selected={i === highlight}
               onMouseDown={(e) => {
                 e.preventDefault();
@@ -142,6 +144,7 @@ export function ChipInput({
           {isNew && (
             <button
               type="button"
+              tabIndex={-1}
               onMouseDown={(e) => {
                 e.preventDefault();
                 add(text);
