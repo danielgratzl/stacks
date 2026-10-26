@@ -25,6 +25,17 @@ Open <http://localhost:8080>. Data is stored in the `stacks-data` volume.
 
 To update after pulling new code, run `docker compose up -d --build` again. Database migrations run automatically on start.
 
+### Prebuilt image
+
+Images for `linux/amd64` and `linux/arm64` are published to the GitHub Container Registry:
+
+- `ghcr.io/danielgratzl/stacks:latest` is the newest release, and `:1`, `:1.2` and `:1.2.3` follow that version line.
+- `ghcr.io/danielgratzl/stacks:edge` is the latest commit on `main`.
+
+To use one instead of building locally, set `image:` in `compose.yaml` to the tag you want, remove the `build: .` line, and run `docker compose pull && docker compose up -d`.
+
+Pushing a `v*.*.*` tag (e.g. `git tag v1.0.0 && git push origin v1.0.0`) publishes a release.
+
 ## Configuration
 
 Compose reads these from `.env`. The server reads them from its environment.
