@@ -23,13 +23,14 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.9 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
+  --ring: oklch(0.62 0.072 133);
   --overlay: oklch(0.141 0.005 285.823 / 0.35);
 
-  /* Medium accents and the shelf */
-  --book: oklch(0.45 0.06 160);
-  --vinyl: oklch(0.45 0.12 0);
-  --shelf: oklch(0.86 0.02 70);
+  /* Medium accents and the shelf, from the Old Bamboo (#769164) logo palette:
+     book is bamboo, vinyl its berry triad, the shelf the logo's page cream */
+  --book: oklch(0.47 0.06 133);
+  --vinyl: oklch(0.47 0.08 354);
+  --shelf: oklch(0.88 0.03 116);
 }
 
 .dark {
@@ -50,12 +51,12 @@
   --destructive: oklch(0.65 0.2 22);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.55 0.016 285.938);
+  --ring: oklch(0.58 0.065 133);
   --overlay: oklch(0 0 0 / 0.6);
 
-  --book: oklch(0.74 0.08 160);
-  --vinyl: oklch(0.74 0.11 0);
-  --shelf: oklch(0.3 0.012 70);
+  --book: oklch(0.76 0.07 133);
+  --vinyl: oklch(0.74 0.08 354);
+  --shelf: oklch(0.3 0.02 130);
 }
 
 @theme inline {
