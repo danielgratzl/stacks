@@ -3,10 +3,12 @@ import {
   locationSubtree,
   normalizeText,
   originalYearOf,
+  READ_STATUSES,
   type Item,
   type MediaType,
+  type ReadStatus,
 } from '@stacks/shared';
-import { ArrowUpRight, Globe, LayoutGrid, List, MapPin, Plus, Search, Tag, X } from 'lucide-react';
+import { ArrowUpRight, BookCheck, Globe, LayoutGrid, List, MapPin, Plus, Search, Tag, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { EmptyState } from '@/components/EmptyState';
@@ -19,7 +21,7 @@ import { NativeSelect } from '@/components/ui/native-select';
 import { Segmented } from '@/components/ui/segmented';
 import { Skeleton } from '@/components/ui/skeleton';
 import { uniqueSorted } from '@/lib/format';
-import { creatorsText, MEDIA } from '@/lib/media';
+import { creatorsText, MEDIA, READ_STATUS } from '@/lib/media';
 import { useLocations } from '@/lib/queries';
 import { useSheet } from '@/lib/sheet';
 import { cn } from '@/lib/utils';
@@ -64,6 +66,8 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
   const lang = params.get('lang') ?? '';
   const tag = params.get('tag') ?? '';
   const avail = params.get('avail') ?? '';
+  const readParam = params.get('read') as ReadStatus;
+  const read = type === 'book' && READ_STATUSES.includes(readParam) ? readParam : '';
   const sort = (params.get('sort') as SortKey) in SORTS ? (params.get('sort') as SortKey) : 'recent';
   const setParam = (key: string, value: string) => {
     const next = new URLSearchParams(params);
@@ -73,7 +77,7 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
   };
   const clearAll = () => {
     const next = new URLSearchParams(params);
-    ['q', 'loc', 'lang', 'tag', 'avail'].forEach((k) => next.delete(k));
+    ['q', 'loc', 'lang', 'tag', 'avail', 'read'].forEach((k) => next.delete(k));
     setParams(next, { replace: true });
   };
 
@@ -92,6 +96,7 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
         if (tag && !i.tags.includes(tag)) return false;
         if (avail === 'lent' && !i.loan) return false;
         if (avail === 'shelf' && i.loan) return false;
+        if (read && i.readStatus !== read) return false;
         if (!words.length) return true;
         const hay = normalizeText(
           [
@@ -112,13 +117,14 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
         return words.every((w) => hay.includes(w));
       })
       .sort(SORTS[sort]);
-  }, [pool, q, loc, lang, tag, avail, sort, locations]);
+  }, [pool, q, loc, lang, tag, avail, read, sort, locations]);
 
   const active = [
     loc && { key: 'loc', label: locationPath(locations, loc).join(' › '), icon: MapPin },
     lang && { key: 'lang', label: lang, icon: Globe },
     tag && { key: 'tag', label: tag, icon: Tag },
     avail && { key: 'avail', label: avail === 'lent' ? 'Lent out' : 'On the shelf', icon: ArrowUpRight },
+    read && { key: 'read', label: READ_STATUS[read].label, icon: BookCheck },
   ].filter(Boolean) as { key: string; label: string; icon: typeof Tag }[];
 
   if (loading)
@@ -215,6 +221,21 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
               <option value="">Any status</option>
               <option value="shelf">On the shelf</option>
               <option value="lent">Lent out</option>
+            </NativeSelect>
+          )}
+          {type === 'book' && (
+            <NativeSelect
+              aria-label="Read status"
+              className="min-w-[140px] flex-1 sm:w-[150px] sm:flex-none"
+              value={read}
+              onChange={(e) => setParam('read', e.target.value)}
+            >
+              <option value="">Any read status</option>
+              {READ_STATUSES.map((r) => (
+                <option key={r} value={r}>
+                  {READ_STATUS[r].label}
+                </option>
+              ))}
             </NativeSelect>
           )}
           <NativeSelect

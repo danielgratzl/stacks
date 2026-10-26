@@ -21,6 +21,21 @@ describe('items API', () => {
     expect(list.body.items).toHaveLength(1);
   });
 
+  it('tracks the read status of books only', async () => {
+    const { call } = await setup();
+    const book = (await call('POST', '/api/items', { type: 'book', title: 'Dune' })).body;
+    expect(book.readStatus).toBe('unread');
+    const read = await call('PATCH', `/api/items/${book.id}`, { readStatus: 'read' });
+    expect(read.body.readStatus).toBe('read');
+    expect((await call('PATCH', `/api/items/${book.id}`, { readStatus: 'skimmed' })).status).toBe(400);
+    const vinyl = await call('POST', '/api/items', {
+      type: 'vinyl',
+      title: 'Blue Train',
+      readStatus: 'read',
+    });
+    expect(vinyl.body.readStatus).toBe('unread');
+  });
+
   it('rejects missing titles and editions older than the original', async () => {
     const { call } = await setup();
     expect((await call('POST', '/api/items', { type: 'book', title: '' })).status).toBe(400);

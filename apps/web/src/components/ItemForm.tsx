@@ -1,4 +1,4 @@
-import { validateItem, type Item, type ItemFields, type Location } from '@stacks/shared';
+import { READ_STATUSES, validateItem, type Item, type ItemFields, type Location } from '@stacks/shared';
 import { Barcode, BookOpen, Disc3, Heart, Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Segmented } from '@/components/ui/segmented';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { uniqueSorted } from '@/lib/format';
-import { LANGUAGES, MEDIA } from '@/lib/media';
+import { LANGUAGES, MEDIA, READ_STATUS } from '@/lib/media';
 import { toFormValues, type FormErrors as Errors, type FormValues } from '@/lib/item-form';
 import { cn } from '@/lib/utils';
 import { ChipInput } from './ChipInput';
@@ -337,6 +337,17 @@ export function ItemForm({
                 )}
               </div>
             )}
+            {values.type === 'book' &&
+              field(
+                'readStatus',
+                'Read status',
+                <Segmented
+                  className="w-full"
+                  value={values.readStatus}
+                  onChange={(r) => set('readStatus', r)}
+                  options={READ_STATUSES.map((r) => ({ value: r, label: READ_STATUS[r].label }))}
+                />,
+              )}
             <div className={cn('grid gap-3', wish ? 'grid-cols-1' : 'grid-cols-2')}>
               {!wish &&
                 field(

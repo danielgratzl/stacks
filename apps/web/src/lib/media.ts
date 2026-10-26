@@ -1,5 +1,5 @@
-import type { Item, MediaType } from '@stacks/shared';
-import { BookOpen, Disc3, type LucideIcon } from 'lucide-react';
+import type { Item, MediaType, ReadStatus } from '@stacks/shared';
+import { Book, BookCheck, BookMarked, BookOpen, Disc3, type LucideIcon } from 'lucide-react';
 
 export const MEDIA: Record<
   MediaType,
@@ -34,6 +34,12 @@ export const MEDIA: Record<
     icon: Disc3,
     path: '/vinyl',
   },
+};
+
+export const READ_STATUS: Record<ReadStatus, { label: string; icon: LucideIcon }> = {
+  unread: { label: 'Unread', icon: Book },
+  'want-to-read': { label: 'Want to read', icon: BookMarked },
+  read: { label: 'Read', icon: BookCheck },
 };
 
 export const LANGUAGES = [

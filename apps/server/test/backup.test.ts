@@ -16,6 +16,7 @@ describe('export and import', () => {
       title: 'A',
       locationId: shelf.id,
       cover: cover.cover,
+      readStatus: 'read',
     });
     await source.call('POST', '/api/items', { type: 'vinyl', title: 'B', status: 'wishlist' });
     const exported = (await source.call('GET', '/api/export')).body;
@@ -28,9 +29,21 @@ describe('export and import', () => {
     expect(items.find((i: { title: string }) => i.title === 'A')).toMatchObject({
       locationId: shelf.id,
       cover: cover.cover,
+      readStatus: 'read',
     });
 
     // importing again adds nothing
     expect((await target.call('POST', '/api/import', exported)).body).toMatchObject({ items: 0, skipped: 2 });
+  });
+
+  it('imports exports made before read status existed', async () => {
+    const source = await setup();
+    await source.call('POST', '/api/items', { type: 'book', title: 'A' });
+    const exported = (await source.call('GET', '/api/export')).body;
+    for (const item of exported.items) delete item.readStatus;
+
+    const target = await setup();
+    expect((await target.call('POST', '/api/import', exported)).body).toMatchObject({ items: 1 });
+    expect((await target.call('GET', '/api/items')).body.items[0].readStatus).toBe('unread');
   });
 });

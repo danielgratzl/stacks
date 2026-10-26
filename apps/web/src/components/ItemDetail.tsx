@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { agoText, daysSince, formatDate, formatDay, todayISO } from '@/lib/format';
-import { creatorsText, isWish, lentLabel, MEDIA } from '@/lib/media';
+import { creatorsText, isWish, lentLabel, MEDIA, READ_STATUS } from '@/lib/media';
 import { CoverArt } from './CoverArt';
 
 function LendForm({
@@ -120,6 +120,7 @@ export function ItemDetail({
     ['Original year', item.originalYear],
     ['Edition year', item.editionYear],
     ['Language', item.language],
+    ['Read status', item.type === 'book' ? READ_STATUS[item.readStatus].label : null],
     [
       'Location',
       path.length ? (

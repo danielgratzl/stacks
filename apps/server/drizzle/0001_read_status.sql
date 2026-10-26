@@ -1,0 +1,1 @@
+ALTER TABLE `items` ADD `read_status` text DEFAULT 'unread' NOT NULL;

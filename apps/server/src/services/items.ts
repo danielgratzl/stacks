@@ -33,6 +33,7 @@ export function rowToItem(row: ItemRow): Item {
     tags: row.tags,
     notes: row.notes,
     loan: row.loanSince ? { to: row.loanTo ?? '', since: row.loanSince } : null,
+    readStatus: row.readStatus,
     addedAt: row.addedAt,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

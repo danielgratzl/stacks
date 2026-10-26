@@ -2,9 +2,11 @@ import { z } from 'zod';
 
 export const MEDIA_TYPES = ['book', 'vinyl'] as const;
 export const ITEM_STATUSES = ['owned', 'wishlist'] as const;
+export const READ_STATUSES = ['unread', 'want-to-read', 'read'] as const;
 
 export const mediaTypeSchema = z.enum(MEDIA_TYPES);
 export const itemStatusSchema = z.enum(ITEM_STATUSES);
+export const readStatusSchema = z.enum(READ_STATUSES);
 
 export const idSchema = z.string().uuid();
 /** Cover files are stored under server-generated names. */
@@ -52,6 +54,8 @@ export const itemFieldsSchema = z.object({
   tags: list(100, 60),
   notes: text(20_000),
   loan: loanSchema.nullable(),
+  /** Books only; always 'unread' for other media. */
+  readStatus: readStatusSchema,
 });
 
 export const itemCreateSchema = itemFieldsSchema.partial().extend({
@@ -62,6 +66,7 @@ export const itemPatchSchema = itemFieldsSchema.partial();
 
 export type MediaType = z.infer<typeof mediaTypeSchema>;
 export type ItemStatus = z.infer<typeof itemStatusSchema>;
+export type ReadStatus = z.infer<typeof readStatusSchema>;
 export type Loan = z.infer<typeof loanSchema>;
 export type ItemFields = z.infer<typeof itemFieldsSchema>;
 export type ItemCreate = z.input<typeof itemCreateSchema>;
@@ -91,6 +96,7 @@ export const ITEM_DEFAULTS: Omit<ItemFields, 'type' | 'title'> = {
   tags: [],
   notes: '',
   loan: null,
+  readStatus: 'unread',
 };
 
 /**
@@ -117,6 +123,7 @@ export function normalizeItem<T extends ItemFields>(item: T): T {
   if (out.type !== 'book') {
     out.seriesName = '';
     out.seriesNumber = '';
+    out.readStatus = 'unread';
   }
   if (!out.seriesName) out.seriesNumber = '';
   return out;
@@ -171,6 +178,8 @@ export const exportSchema = z.object({
   ),
   items: z.array(
     itemFieldsSchema.extend({
+      // added after version 1 shipped; older files have none
+      readStatus: readStatusSchema.default('unread'),
       id: idSchema,
       addedAt: z.string(),
       createdAt: z.string(),

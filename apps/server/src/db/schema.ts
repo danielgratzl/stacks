@@ -1,4 +1,4 @@
-import type { ItemStatus, MediaType } from '@stacks/shared';
+import type { ItemStatus, MediaType, ReadStatus } from '@stacks/shared';
 import { sql } from 'drizzle-orm';
 import { index, integer, sqliteTable, text, type AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 
@@ -42,6 +42,7 @@ export const items = sqliteTable(
     notes: text('notes').notNull().default(''),
     loanTo: text('loan_to'),
     loanSince: text('loan_since'),
+    readStatus: text('read_status').$type<ReadStatus>().notNull().default('unread'),
     addedAt: text('added_at').notNull(),
     createdAt: text('created_at').notNull(),
     updatedAt: text('updated_at').notNull(),
