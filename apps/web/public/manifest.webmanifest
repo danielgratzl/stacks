@@ -1,0 +1,10 @@
+{
+  "name": "Stacks",
+  "short_name": "Stacks",
+  "description": "A personal media library for books and vinyl.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#18181b",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
