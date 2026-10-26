@@ -29,12 +29,12 @@ To update after pulling new code, run `docker compose up -d --build` again. Data
 
 Images for `linux/amd64` and `linux/arm64` are published to the GitHub Container Registry:
 
-- `ghcr.io/danielgratzl/stacks:latest` is the newest release, and `:1`, `:1.2` and `:1.2.3` follow that version line.
-- `ghcr.io/danielgratzl/stacks:edge` is the latest commit on `main`.
+- `ghcr.io/danielgratzl/stacks:latest` is the latest commit on `main`.
+- `:1.2.3`, `:1.2` and `:1` are releases and follow that version line.
 
 To use one instead of building locally, set `image:` in `compose.yaml` to the tag you want, remove the `build: .` line, and run `docker compose pull && docker compose up -d`.
 
-Pushing a `v*.*.*` tag (e.g. `git tag v1.0.0 && git push origin v1.0.0`) publishes a release.
+Images are only published once the checks pass. Pushing a `v*.*.*` tag (e.g. `git tag v1.0.0 && git push origin v1.0.0`) publishes a release.
 
 ## Configuration
 
