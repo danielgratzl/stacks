@@ -39,7 +39,6 @@ ENV NODE_ENV=production \
 WORKDIR /app
 COPY --from=build --chown=node:node /out ./
 RUN mkdir -p /data && chown node:node /data
-USER node
 VOLUME ["/data"]
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
