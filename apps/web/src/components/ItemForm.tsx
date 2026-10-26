@@ -85,7 +85,9 @@ export function ItemForm({
       publishers: uniqueSorted(same.map((i) => i.publisher)),
       series: uniqueSorted(same.map((i) => i.seriesName)),
       tags: uniqueSorted(same.flatMap((i) => i.tags)),
-      languages: uniqueSorted([...items.map((i) => i.language), ...LANGUAGES]),
+      languages: uniqueSorted([...items.map((i) => i.language), ...LANGUAGES]).filter(
+        (l) => values.type === 'vinyl' || l !== 'Instrumental',
+      ),
     };
   }, [items, values.type]);
 
