@@ -93,8 +93,8 @@ function GeneratedCover({ item, size }: { item: CoverItem; size: Size }) {
 }
 
 /**
- * A book or record cover. Records sit in a sleeve and slide out on hover
- * (or permanently, with peek="always").
+ * A book or record cover. Records sit in a sleeve and slide out on hover,
+ * unless peek="never" (detail and form previews).
  */
 export function CoverArt({
   item,
@@ -104,7 +104,7 @@ export function CoverArt({
 }: {
   item: CoverItem;
   size?: Size;
-  peek?: 'hover' | 'always' | 'never';
+  peek?: 'hover' | 'never';
   className?: string;
 }) {
   const vinyl = item.type === 'vinyl';
@@ -112,14 +112,7 @@ export function CoverArt({
   return (
     <div className={cn('relative', className)} style={{ aspectRatio: vinyl ? '1 / 1' : '2 / 3' }}>
       {vinyl && size !== 'sm' && peek !== 'never' && (
-        <div
-          className={cn(
-            'record ease-snappy absolute inset-[3%] rounded-full transition-transform duration-500',
-            peek === 'always'
-              ? 'translate-x-[22%]'
-              : 'group-hover:translate-x-[18%] group-focus-visible:translate-x-[18%]',
-          )}
-        >
+        <div className="record ease-snappy absolute inset-[3%] rounded-full transition-transform duration-500 group-hover:translate-x-[min(12%,16px)] group-focus-visible:translate-x-[min(12%,16px)]">
           <div className="record-label" style={{ background: label }} />
         </div>
       )}

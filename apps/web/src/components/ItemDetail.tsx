@@ -174,14 +174,8 @@ export function ItemDetail({
         )}
 
         <div className="grid gap-6 sm:grid-cols-[170px_1fr]">
-          <div
-            className={
-              item.type === 'vinyl'
-                ? 'mx-auto w-full max-w-[150px] pr-8 sm:max-w-none'
-                : 'mx-auto w-full max-w-[150px] sm:max-w-none'
-            }
-          >
-            <CoverArt item={item} size="lg" peek="always" />
+          <div className="mx-auto w-full max-w-[150px] sm:max-w-none">
+            <CoverArt item={item} size="lg" peek="never" />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap gap-1.5">

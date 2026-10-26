@@ -106,7 +106,7 @@ export function CoverPicker({
         ) : value ? (
           <CoverArt
             item={{ type, title, creators: [], cover: value, status: 'owned', loan: null, seriesNumber: '' }}
-            peek="always"
+            peek="never"
           />
         ) : (
           <button
