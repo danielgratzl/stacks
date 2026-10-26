@@ -27,9 +27,9 @@
   --overlay: oklch(0.141 0.005 285.823 / 0.35);
 
   /* Medium accents and the shelf, from the Old Bamboo (#769164) logo palette:
-     book is bamboo, vinyl its berry triad, the shelf the logo's page cream */
+     both media share the bamboo green, the shelf is the logo's page cream */
   --book: oklch(0.47 0.06 133);
-  --vinyl: oklch(0.47 0.08 354);
+  --vinyl: var(--book);
   --shelf: oklch(0.88 0.03 116);
 }
 
@@ -55,7 +55,6 @@
   --overlay: oklch(0 0 0 / 0.6);
 
   --book: oklch(0.76 0.07 133);
-  --vinyl: oklch(0.74 0.08 354);
   --shelf: oklch(0.3 0.02 130);
 }
 
