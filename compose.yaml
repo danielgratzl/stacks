@@ -1,0 +1,24 @@
+name: stacks
+
+services:
+  stacks:
+    build: .
+    image: stacks:latest
+    restart: unless-stopped
+    ports:
+      - '${STACKS_PORT:-8080}:3000'
+    environment:
+      # Allow importing covers from your local network (e.g. a NAS). Off by default.
+      COVER_IMPORT_ALLOW_PRIVATE: ${COVER_IMPORT_ALLOW_PRIVATE:-false}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - stacks-data:/data
+    stop_grace_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+
+volumes:
+  stacks-data:

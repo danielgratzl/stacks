@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/coverage
+**/.env
+**/*.log
+.git
+.github
+.vscode
+.idea
+data
+docs
+Dockerfile
+compose.yaml
