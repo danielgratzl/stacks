@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Native modules that need their install scripts to run.
+onlyBuiltDependencies:
+  - better-sqlite3
+  - esbuild
