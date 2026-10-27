@@ -155,6 +155,31 @@ export const coverImportSchema = z.object({
   url: z.string().trim().url('Enter a full web address, starting with https://').max(2048),
 });
 
+export const COVER_SOURCES = ['openlibrary', 'apple', 'deezer'] as const;
+export type CoverSource = (typeof COVER_SOURCES)[number];
+/** Sources searched for each media type, fastest first so slower ones append below. */
+export const COVER_SOURCES_FOR: Record<MediaType, CoverSource[]> = {
+  book: ['apple', 'openlibrary'],
+  vinyl: ['apple', 'deezer'],
+};
+
+export const coverSearchSchema = z.object({
+  type: mediaTypeSchema,
+  source: z.enum(COVER_SOURCES),
+  q: z.string().trim().min(1, 'Enter a title to search for').max(300),
+});
+export type CoverSearchQuery = z.infer<typeof coverSearchSchema>;
+
+/** A cover found online. Importing `imageUrl` stores it like any other linked image. */
+export interface CoverCandidate {
+  source: CoverSource;
+  title: string;
+  creator: string;
+  year: number | null;
+  thumbnailUrl: string;
+  imageUrl: string;
+}
+
 export interface CoverUploadResult {
   cover: string;
   width: number;

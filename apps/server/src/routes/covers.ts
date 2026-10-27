@@ -1,15 +1,19 @@
-import { coverImportSchema } from '@stacks/shared';
+import { coverImportSchema, coverSearchSchema } from '@stacks/shared';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { AppError } from '../lib/errors';
 import { validate } from '../lib/validate';
+import type { CoverSearch } from '../services/cover-search';
 import type { CoverStore } from '../services/covers';
 import { fetchImage, type FetchImageOptions } from '../services/safe-fetch';
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
-export function coverRoutes(covers: CoverStore, importOptions: FetchImageOptions) {
+export function coverRoutes(covers: CoverStore, importOptions: FetchImageOptions, search: CoverSearch) {
   return new Hono()
+    .get('/search', validate('query', coverSearchSchema), async (c) =>
+      c.json({ results: await search.search(c.req.valid('query')) }),
+    )
     .post(
       '/',
       bodyLimit({

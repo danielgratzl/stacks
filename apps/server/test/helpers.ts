@@ -5,6 +5,7 @@ import { afterEach } from 'vitest';
 import { createApp } from '../src/app';
 import { openDatabase } from '../src/db/client';
 import { serverRoot } from '../src/lib/paths';
+import type { CoverSearch } from '../src/services/cover-search';
 import { CoverStore } from '../src/services/covers';
 
 const cleanups: (() => void)[] = [];
@@ -12,7 +13,7 @@ afterEach(() => {
   while (cleanups.length) cleanups.pop()!();
 });
 
-export async function setup() {
+export async function setup({ coverSearch }: { coverSearch?: CoverSearch } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'stacks-test-'));
   const database = openDatabase(':memory:', join(serverRoot(), 'drizzle'));
   const covers = new CoverStore(join(dir, 'covers'));
@@ -20,6 +21,7 @@ export async function setup() {
   const { app, itemService } = createApp({
     db: database.db,
     covers,
+    coverSearch,
     config: {
       webDir: join(dir, 'no-web'),
       coverImport: { allowPrivate: false, maxBytes: 1e6, timeoutMs: 2000 },

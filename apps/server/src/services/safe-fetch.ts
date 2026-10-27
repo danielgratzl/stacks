@@ -53,6 +53,8 @@ const safeLookup: LookupFunction = (hostname, options, callback) => {
   });
 };
 
+export const USER_AGENT = 'Stacks/0.1 (self-hosted media library)';
+
 const publicAgent = new Agent({ connect: { lookup: safeLookup } });
 const anyAgent = new Agent();
 
@@ -83,7 +85,7 @@ export async function fetchImage(rawUrl: string, opts: FetchImageOptions): Promi
         signal,
         dispatcher: opts.allowPrivate ? anyAgent : publicAgent,
         headers: {
-          'user-agent': 'Stacks/0.1 (self-hosted media library)',
+          'user-agent': USER_AGENT,
           accept: 'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8',
         },
       });

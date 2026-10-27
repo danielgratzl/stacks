@@ -1,5 +1,7 @@
 import type {
   ApiError,
+  CoverCandidate,
+  CoverSearchQuery,
   CoverUploadResult,
   ImportResult,
   Item,
@@ -70,6 +72,10 @@ export const api = {
       return request<CoverUploadResult>('POST', '/api/covers', form);
     },
     importUrl: (url: string) => request<CoverUploadResult>('POST', '/api/covers/import', { url }),
+    search: (query: CoverSearchQuery) =>
+      request<{ results: CoverCandidate[] }>('GET', `/api/covers/search?${new URLSearchParams(query)}`).then(
+        (r) => r.results,
+      ),
   },
   importLibrary: (data: unknown) => request<ImportResult>('POST', '/api/import', data),
 };

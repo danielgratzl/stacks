@@ -10,6 +10,7 @@ import { backupRoutes } from './routes/backup';
 import { coverFiles, coverRoutes } from './routes/covers';
 import { itemRoutes } from './routes/items';
 import { locationRoutes } from './routes/locations';
+import { COVER_IMAGE_HOSTS, CoverSearch } from './services/cover-search';
 import type { CoverStore } from './services/covers';
 import { ItemService } from './services/items';
 import { LocationService } from './services/locations';
@@ -17,10 +18,11 @@ import { LocationService } from './services/locations';
 export interface AppDeps {
   db: Db;
   covers: CoverStore;
+  coverSearch?: CoverSearch;
   config: Pick<Config, 'webDir' | 'coverImport'>;
 }
 
-export function createApp({ db, covers, config }: AppDeps) {
+export function createApp({ db, covers, coverSearch = new CoverSearch(), config }: AppDeps) {
   const itemService = new ItemService({ db, coverExists: (n) => covers.exists(n) });
   const locationService = new LocationService(db);
 
@@ -30,7 +32,8 @@ export function createApp({ db, covers, config }: AppDeps) {
     secureHeaders({
       contentSecurityPolicy: {
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'blob:'],
+        // Remote hosts are for cover search thumbnails; chosen covers are imported and served from here.
+        imgSrc: ["'self'", 'data:', 'blob:', ...COVER_IMAGE_HOSTS],
         styleSrc: ["'self'", "'unsafe-inline'"],
         fontSrc: ["'self'", 'data:'],
         connectSrc: ["'self'"],
@@ -56,7 +59,7 @@ export function createApp({ db, covers, config }: AppDeps) {
     .get('/health', (c) => c.json({ status: 'ok' }))
     .route('/items', itemRoutes(itemService))
     .route('/locations', locationRoutes(locationService))
-    .route('/covers', coverRoutes(covers, config.coverImport))
+    .route('/covers', coverRoutes(covers, config.coverImport, coverSearch))
     .route('/', backupRoutes(db, covers));
   api.notFound((c) => c.json({ error: { code: 'not_found', message: 'Not found.' } }, 404));
 

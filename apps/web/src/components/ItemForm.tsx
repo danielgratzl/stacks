@@ -210,6 +210,7 @@ export function ItemForm({
           <CoverPicker
             type={values.type}
             title={values.title || 'Untitled'}
+            searchQuery={[values.title.trim(), values.creators[0]].filter(Boolean).join(' ')}
             value={values.cover}
             onChange={(c) => set('cover', c)}
             onBusyChange={setCoverBusy}

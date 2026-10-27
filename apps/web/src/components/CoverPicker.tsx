@@ -1,5 +1,5 @@
 import type { MediaType } from '@stacks/shared';
-import { ImagePlus, Link2, Loader2 } from 'lucide-react';
+import { Globe, ImagePlus, Link2, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,22 +7,26 @@ import { api } from '@/lib/api';
 import { errorMessage } from '@/lib/queries';
 import { cn } from '@/lib/utils';
 import { CoverArt } from './CoverArt';
+import { CoverSearchDialog } from './CoverSearchDialog';
 
 const looksLikeUrl = (s: string) => /^https?:\/\/\S+$/i.test(s.trim());
 
 /**
- * Upload by click, drop or paste, or import from a web address. Uploads start immediately
- * and the server returns the stored file name.
+ * Upload by click, drop or paste, import from a web address, or search the web for one.
+ * Uploads start immediately and the server returns the stored file name.
  */
 export function CoverPicker({
   type,
   title,
+  searchQuery,
   value,
   onChange,
   onBusyChange,
 }: {
   type: MediaType;
   title: string;
+  /** Pre-fills the web search, e.g. title and first creator. */
+  searchQuery: string;
   value: string | null;
   onChange: (cover: string | null) => void;
   onBusyChange?: (busy: boolean) => void;
@@ -34,6 +38,7 @@ export function CoverPicker({
   const [drag, setDrag] = useState(false);
   const [urlMode, setUrlMode] = useState(false);
   const [url, setUrl] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
@@ -62,6 +67,17 @@ export function CoverPicker({
   const importUrl = (raw: string) => {
     if (!looksLikeUrl(raw)) return setError('Enter a full web address, starting with https://');
     void run(() => api.covers.importUrl(raw.trim()));
+  };
+
+  // The dialog shows its own progress and errors, so this one rethrows.
+  const importFound = async (imageUrl: string) => {
+    setError(null);
+    setBusy(true);
+    try {
+      onChange((await api.covers.importUrl(imageUrl)).cover);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const onDrop = (e: React.DragEvent) => {
@@ -155,7 +171,25 @@ export function CoverPicker({
             From a link
           </Button>
         )}
+        {!busy && (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-muted-foreground"
+            onClick={() => setSearchOpen(true)}
+          >
+            <Globe />
+            Search the web
+          </Button>
+        )}
       </div>
+      <CoverSearchDialog
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        type={type}
+        initialQuery={searchQuery}
+        onImport={importFound}
+      />
 
       {urlMode && (
         <div className="anim-fade mt-2 flex gap-1.5">

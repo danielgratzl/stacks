@@ -7,7 +7,7 @@ A personal media library for books and vinyl. Catalogue what you own, where it l
 - **Locations** as a simple hierarchy, e.g. Living room › Shelf › Top.
 - **Wishlist**, kept separate from the collection.
 - **Lending**, with who has an item and since when.
-- **Covers** by upload, drag and drop, paste, or import from a link.
+- **Covers** by upload, drag and drop, paste, import from a link, or a web search (Open Library and Apple Books for books, Apple Music and Deezer for vinyl).
 - **Backups** as a single JSON file that includes the covers.
 
 It is a single-user app with no login. Run it on your own machine or home server, behind your own network or reverse proxy.
@@ -136,24 +136,25 @@ Migrations are applied automatically when the server starts.
 
 JSON over HTTP under `/api`. Errors use `{ "error": { "code", "message", "fields"? } }`.
 
-| Method | Path                     | Purpose                                                        |
-| ------ | ------------------------ | -------------------------------------------------------------- |
-| GET    | `/api/items`             | All items (collection and wishlist).                           |
-| POST   | `/api/items`             | Create an item.                                                |
-| GET    | `/api/items/:id`         | One item.                                                      |
-| PATCH  | `/api/items/:id`         | Update some fields.                                            |
-| DELETE | `/api/items/:id`         | Delete (restorable).                                           |
-| POST   | `/api/items/:id/restore` | Undo a delete.                                                 |
-| GET    | `/api/locations`         | All locations.                                                 |
-| POST   | `/api/locations`         | Create a location.                                             |
-| PATCH  | `/api/locations/:id`     | Rename or move a location.                                     |
-| DELETE | `/api/locations/:id`     | Delete a location and its children; items move to the parent.  |
-| POST   | `/api/covers`            | Upload a cover (multipart, field `file`). Returns `{ cover }`. |
-| POST   | `/api/covers/import`     | Import a cover from `{ url }`. Returns `{ cover }`.            |
-| GET    | `/covers/:name`          | A stored cover image.                                          |
-| GET    | `/api/export`            | Download a backup (`?covers=false` to leave covers out).       |
-| POST   | `/api/import`            | Restore from a backup.                                         |
-| GET    | `/api/health`            | Health check.                                                  |
+| Method | Path                     | Purpose                                                          |
+| ------ | ------------------------ | ---------------------------------------------------------------- |
+| GET    | `/api/items`             | All items (collection and wishlist).                             |
+| POST   | `/api/items`             | Create an item.                                                  |
+| GET    | `/api/items/:id`         | One item.                                                        |
+| PATCH  | `/api/items/:id`         | Update some fields.                                              |
+| DELETE | `/api/items/:id`         | Delete (restorable).                                             |
+| POST   | `/api/items/:id/restore` | Undo a delete.                                                   |
+| GET    | `/api/locations`         | All locations.                                                   |
+| POST   | `/api/locations`         | Create a location.                                               |
+| PATCH  | `/api/locations/:id`     | Rename or move a location.                                       |
+| DELETE | `/api/locations/:id`     | Delete a location and its children; items move to the parent.    |
+| POST   | `/api/covers`            | Upload a cover (multipart, field `file`). Returns `{ cover }`.   |
+| POST   | `/api/covers/import`     | Import a cover from `{ url }`. Returns `{ cover }`.              |
+| GET    | `/api/covers/search`     | Find covers online (`?type=&source=&q=`). Returns `{ results }`. |
+| GET    | `/covers/:name`          | A stored cover image.                                            |
+| GET    | `/api/export`            | Download a backup (`?covers=false` to leave covers out).         |
+| POST   | `/api/import`            | Restore from a backup.                                           |
+| GET    | `/api/health`            | Health check.                                                    |
 
 ## License
 
