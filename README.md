@@ -8,6 +8,7 @@ A personal media library for books and vinyl. Catalogue what you own, where it l
 - **Wishlist**, kept separate from the collection.
 - **Lending**, with who has an item and since when.
 - **Covers** by upload, drag and drop, paste, import from a link, or a web search (Open Library and Apple Books for books, Apple Music and Deezer for vinyl).
+- **Sort by cover color**, for a rainbow shelf. Each cover's main color is detected automatically, including for covers added before this feature.
 - **Backups** as a single JSON file that includes the covers.
 
 It is a single-user app with no login. Run it on your own machine or home server, behind your own network or reverse proxy.

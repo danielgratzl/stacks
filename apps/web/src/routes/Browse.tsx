@@ -1,4 +1,5 @@
 import {
+  compareCoverColor,
   locationPath,
   locationSubtree,
   normalizeText,
@@ -42,6 +43,7 @@ const SORTS = {
   creator: (a: Item, b: Item) =>
     creatorsText(a).localeCompare(creatorsText(b)) || a.title.localeCompare(b.title),
   year: (a: Item, b: Item) => (originalYearOf(a) ?? 9999) - (originalYearOf(b) ?? 9999),
+  color: (a: Item, b: Item) => compareCoverColor(a.coverColor, b.coverColor),
 };
 type SortKey = keyof typeof SORTS;
 
@@ -248,6 +250,7 @@ export function Browse({ type, items, loading }: { type: MediaType; items: Item[
             <option value="title">Title</option>
             <option value="creator">{media.creator}</option>
             <option value="year">Original year</option>
+            <option value="color">Cover color</option>
           </NativeSelect>
           <Segmented
             value={view}

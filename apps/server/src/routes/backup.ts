@@ -6,8 +6,9 @@ import { validate } from '../lib/validate';
 import type { Db } from '../db/client';
 import { exportLibrary, importLibrary } from '../services/backup';
 import type { CoverStore } from '../services/covers';
+import type { ItemService } from '../services/items';
 
-export function backupRoutes(db: Db, covers: CoverStore) {
+export function backupRoutes(db: Db, covers: CoverStore, itemService: ItemService) {
   return new Hono()
     .get('/export', async (c) => {
       const withCovers = c.req.query('covers') !== 'false';
@@ -25,6 +26,10 @@ export function backupRoutes(db: Db, covers: CoverStore) {
         },
       }),
       validate('json', exportSchema),
-      async (c) => c.json(await importLibrary(db, covers, c.req.valid('json'))),
+      async (c) => {
+        const result = await importLibrary(db, covers, c.req.valid('json'));
+        await itemService.backfillCoverColors();
+        return c.json(result);
+      },
     );
 }

@@ -21,6 +21,7 @@ describe('export and import', () => {
     await source.call('POST', '/api/items', { type: 'vinyl', title: 'B', status: 'wishlist' });
     const exported = (await source.call('GET', '/api/export')).body;
     expect(Object.keys(exported.covers)).toEqual([cover.cover]);
+    expect(exported.items[0]).not.toHaveProperty('coverColor');
 
     const target = await setup();
     const result = await target.call('POST', '/api/import', exported);
@@ -30,6 +31,7 @@ describe('export and import', () => {
       locationId: shelf.id,
       cover: cover.cover,
       readStatus: 'read',
+      coverColor: expect.stringMatching(/^#[0-9a-f]{6}$/),
     });
 
     // importing again adds nothing

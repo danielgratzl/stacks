@@ -7,6 +7,7 @@ const item = (over: Partial<Item>): Item => ({
   id: String(Math.random()),
   type: 'book',
   title: 'Untitled',
+  coverColor: null,
   addedAt: '',
   createdAt: '',
   updatedAt: '',

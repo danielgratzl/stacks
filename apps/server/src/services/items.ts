@@ -30,6 +30,7 @@ export function rowToItem(row: ItemRow): Item {
     language: row.language,
     barcode: row.barcode,
     cover: row.cover,
+    coverColor: row.coverColor,
     tags: row.tags,
     notes: row.notes,
     loan: row.loanSince ? { to: row.loanTo ?? '', since: row.loanSince } : null,
@@ -48,6 +49,7 @@ function fieldsToRow(f: ItemFields) {
 export interface ItemServiceDeps {
   db: Db;
   coverExists: (name: string) => Promise<boolean>;
+  coverColor: (name: string) => Promise<string | null>;
 }
 
 export class ItemService {
@@ -95,22 +97,30 @@ export class ItemService {
     const fields = await this.check({ ...ITEM_DEFAULTS, ...input } as ItemFields);
     const now = new Date().toISOString();
     const id = randomUUID();
+    const coverColor = fields.cover ? await this.deps.coverColor(fields.cover) : null;
     this.db
       .insert(items)
-      .values({ id, ...fieldsToRow(fields), addedAt: now, createdAt: now, updatedAt: now })
+      .values({ id, ...fieldsToRow(fields), coverColor, addedAt: now, createdAt: now, updatedAt: now })
       .run();
     return this.get(id);
   }
 
   async update(id: string, patch: ItemPatch): Promise<Item> {
     const current = this.get(id);
-    const { id: _id, addedAt, createdAt: _c, updatedAt: _u, ...currentFields } = current;
+    const { id: _id, coverColor, addedAt, createdAt: _c, updatedAt: _u, ...currentFields } = current;
     const fields = await this.check({ ...currentFields, ...patch } as ItemFields);
     const now = new Date().toISOString();
+    const newCoverColor =
+      fields.cover === current.cover
+        ? coverColor
+        : fields.cover
+          ? await this.deps.coverColor(fields.cover)
+          : null;
     this.db
       .update(items)
       .set({
         ...fieldsToRow(fields),
+        coverColor: newCoverColor,
         // Entering the collection (or the wishlist) counts as being added to it.
         addedAt: fields.status !== current.status ? now : addedAt,
         updatedAt: now,
@@ -138,6 +148,27 @@ export class ItemService {
       .delete(items)
       .where(and(isNotNull(items.deletedAt), lt(items.deletedAt, olderThan.toISOString())))
       .run().changes;
+  }
+
+  /** Fills in colors for items whose cover predates color extraction (or came from a backup). */
+  async backfillCoverColors(): Promise<number> {
+    const rows = this.db
+      .select({ id: items.id, cover: items.cover })
+      .from(items)
+      .where(and(isNotNull(items.cover), isNull(items.coverColor)))
+      .all();
+    let filled = 0;
+    for (const row of rows) {
+      const coverColor = await this.deps.coverColor(row.cover!);
+      if (!coverColor) continue;
+      // Only touch rows whose cover hasn't changed while we were reading the file.
+      filled += this.db
+        .update(items)
+        .set({ coverColor })
+        .where(and(eq(items.id, row.id), eq(items.cover, row.cover!), isNull(items.coverColor)))
+        .run().changes;
+    }
+    return filled;
   }
 
   /** Every cover file referenced by any row, including soft-deleted ones. */

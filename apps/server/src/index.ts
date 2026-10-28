@@ -27,6 +27,11 @@ async function main() {
     } catch (error) {
       console.error('maintenance failed', error);
     }
+    // Not awaited: a large first backfill shouldn't hold up startup.
+    itemService
+      .backfillCoverColors()
+      .then((filled) => filled && console.log(`maintenance: found colors for ${filled} covers`))
+      .catch((error) => console.error('cover color backfill failed', error));
   };
   await maintenance();
   const timer = setInterval(maintenance, MAINTENANCE_INTERVAL_MS);

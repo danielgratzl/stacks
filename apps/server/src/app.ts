@@ -23,7 +23,11 @@ export interface AppDeps {
 }
 
 export function createApp({ db, covers, coverSearch = new CoverSearch(), config }: AppDeps) {
-  const itemService = new ItemService({ db, coverExists: (n) => covers.exists(n) });
+  const itemService = new ItemService({
+    db,
+    coverExists: (n) => covers.exists(n),
+    coverColor: (n) => covers.dominantColor(n),
+  });
   const locationService = new LocationService(db);
 
   const app = new Hono();
@@ -60,7 +64,7 @@ export function createApp({ db, covers, coverSearch = new CoverSearch(), config 
     .route('/items', itemRoutes(itemService))
     .route('/locations', locationRoutes(locationService))
     .route('/covers', coverRoutes(covers, config.coverImport, coverSearch))
-    .route('/', backupRoutes(db, covers));
+    .route('/', backupRoutes(db, covers, itemService));
   api.notFound((c) => c.json({ error: { code: 'not_found', message: 'Not found.' } }, 404));
 
   app.route('/api', api);

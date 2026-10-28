@@ -14,7 +14,8 @@ export async function exportLibrary(db: Db, covers: CoverStore, includeCovers: b
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
     locations: locs.map((l) => ({ id: l.id, name: l.name, parentId: l.parentId, position: l.position })),
-    items: list,
+    // Cover colors are derived data; they're recomputed after import.
+    items: list.map(({ coverColor: _coverColor, ...item }) => item),
   };
   if (includeCovers) {
     file.covers = {};

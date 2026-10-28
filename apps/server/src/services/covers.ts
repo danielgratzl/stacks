@@ -60,6 +60,16 @@ export class CoverStore {
     await this.writeAtomic(name, data);
   }
 
+  /** Most common color of a stored cover as `#rrggbb`, or null if it can't be read. */
+  async dominantColor(name: string): Promise<string | null> {
+    try {
+      const { dominant } = await sharp(this.path(name)).stats();
+      return `#${[dominant.r, dominant.g, dominant.b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+    } catch {
+      return null;
+    }
+  }
+
   read(name: string): Promise<Buffer> {
     return readFile(this.path(name));
   }

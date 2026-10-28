@@ -74,6 +74,8 @@ export type ItemPatch = z.input<typeof itemPatchSchema>;
 
 export interface Item extends ItemFields {
   id: string;
+  /** Dominant cover color as `#rrggbb`, derived by the server; null without a cover. */
+  coverColor: string | null;
   /** When the item entered its current list (collection or wishlist). */
   addedAt: string;
   createdAt: string;

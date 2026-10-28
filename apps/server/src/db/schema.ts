@@ -35,6 +35,7 @@ export const items = sqliteTable(
     language: text('language').notNull().default(''),
     barcode: text('barcode').notNull().default(''),
     cover: text('cover'),
+    coverColor: text('cover_color'),
     tags: text('tags', { mode: 'json' })
       .$type<string[]>()
       .notNull()
