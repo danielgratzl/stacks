@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.5",
-    "@hono/zod-validator": "^0.7.4",
+    "@hono/zod-validator": "^0.9.1",
     "better-sqlite3": "^12.4.1",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.10.0",
-    "sharp": "^0.34.4",
+    "sharp": "^0.35.5",
     "undici": "^7.16.0",
     "zod": "^3.25.76"
   },
